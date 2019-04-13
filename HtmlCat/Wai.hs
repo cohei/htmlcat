@@ -1,25 +1,33 @@
 {-# LANGUAGE OverloadedStrings #-}
 module HtmlCat.Wai (feedStdIn, runHtmlCat) where
-import Control.Concurrent (Chan, writeChan, forkIO)
-import Control.Monad (void)
-import Control.Monad.Trans (MonadIO(..))
-import Data.Text (Text)
-import Prelude hiding (lines)
-import System.IO (stdin)
-import qualified Data.Text as T
 
-import Data.Conduit (($$), ($=), ResourceIO, Source, Sink, SinkResult(..), Conduit, runResourceT, sinkIO)
-import Data.Conduit.Binary (sourceHandle)
-import Data.Conduit.Text (decode, utf8)
-import Network.HTTP.Types (headerContentType, statusOK, statusNotFound)
-import Network.Wai (Application, Request(..), Response(..), responseLBS)
-import Network.Wai.EventSource (ServerEvent(..), eventSourceApp)
-import Network.Wai.Handler.Warp (runSettings, defaultSettings, settingsHost, settingsPort)
-import Text.Blaze.Renderer.Utf8 (renderHtmlBuilder)
 import qualified Blaze.ByteString.Builder.Char.Utf8 as B
-import qualified Data.Conduit.List as CL
+import           Control.Concurrent                 (Chan, forkIO, writeChan)
+import           Control.Monad                      (void)
+import           Control.Monad.Trans                (MonadIO (..))
+import           Data.Conduit                       (Conduit, ResourceIO, Sink,
+                                                     SinkResult (..), Source,
+                                                     runResourceT, sinkIO, ($$),
+                                                     ($=))
+import           Data.Conduit.Binary                (sourceHandle)
+import qualified Data.Conduit.List                  as CL
+import           Data.Conduit.Text                  (decode, utf8)
+import           Data.Text                          (Text)
+import qualified Data.Text                          as T
+import           Network.HTTP.Types                 (headerContentType,
+                                                     statusNotFound, statusOK)
+import           Network.Wai                        (Application, Request (..),
+                                                     Response (..), responseLBS)
+import           Network.Wai.EventSource            (ServerEvent (..),
+                                                     eventSourceApp)
+import           Network.Wai.Handler.Warp           (defaultSettings,
+                                                     runSettings, settingsHost,
+                                                     settingsPort)
+import           Prelude                            hiding (lines)
+import           System.IO                          (stdin)
+import           Text.Blaze.Renderer.Utf8           (renderHtmlBuilder)
 
-import HtmlCat.Html (html)
+import           HtmlCat.Html                       (html)
 
 feedStdIn :: Chan ServerEvent -> IO ()
 feedStdIn chan = void . forkIO . runResourceT $

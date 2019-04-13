@@ -1,19 +1,22 @@
-{-# LANGUAGE ScopedTypeVariables, RecordWildCards, CPP, DeriveDataTypeable #-}
+{-# LANGUAGE CPP                 #-}
+{-# LANGUAGE DeriveDataTypeable  #-}
+{-# LANGUAGE RecordWildCards     #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Main where
-import Control.Concurrent (forkIO, newChan)
-import Control.Exception (IOException, try)
-import Control.Monad (void)
-import Data.Foldable (forM_)
-import Data.Maybe (maybeToList)
-import Network (PortID(..), listenOn, sClose)
-import System.Process (rawSystem)
 
-import System.Console.CmdArgs
+import           Control.Concurrent     (forkIO, newChan)
+import           Control.Exception      (IOException, try)
+import           Control.Monad          (void)
+import           Data.Foldable          (forM_)
+import           Data.Maybe             (maybeToList)
+import           Network                (PortID (..), listenOn, sClose)
+import           System.Console.CmdArgs
+import           System.Process         (rawSystem)
 
 #ifdef SNAP
-import HtmlCat.Snap
+import           HtmlCat.Snap
 #else
-import HtmlCat.Wai
+import           HtmlCat.Wai
 #endif
 
 main :: IO ()
